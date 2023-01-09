@@ -4,6 +4,8 @@
 
 TODO!
 
+> ⚠️ IMPORTANT: the container needs to be **Priviledged** when created. Once created, go back to `Options > Features` and enable `Nesting` as well as `Create Device Nodes`.
+
 ## Install Docker
 
 TODO!
