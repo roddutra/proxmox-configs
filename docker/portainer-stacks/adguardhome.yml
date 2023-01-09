@@ -1,0 +1,21 @@
+---
+version: '2'
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp
+      - 68:68/tcp
+      - 68:68/udp
+      - 853:853/tcp
+      - 80:80/tcp #change this to something like 81:80 if port 80 is already in use
+      - 3000:3000/tcp
+    volumes:
+      # Create 'Adguard_Work' volume and paste the path below before the colon
+      - /var/lib/docker/volumes/Adguard_Work/_data/_data:/opt/adguardhome/work
+      # Create 'Adguard_Config' volume and paste the path below before the colon
+      - /var/lib/docker/volumes/Adguard_Config/_data:/opt/adguardhome/conf
+    restart: unless-stopped
