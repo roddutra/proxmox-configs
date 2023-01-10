@@ -24,3 +24,8 @@ Here are some options:
   - **URL:** `https://raw.githubusercontent.com/Qballjos/portainer_templates/master/Template/template.json`
 
 When you update the App Templates URL, go to the **App Templates** tab in Portainer to see the updates list of available templates.
+
+## Sample community Docker Stacks
+
+- [Awesome Compose](https://github.com/docker/awesome-compose)
+- [Awesome Stacks](https://github.com/ethibox/awesome-stacks)
