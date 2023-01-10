@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - '/mnt/Toshiba_USB_Drive:/srv' # Replace with the desired folder/drive mount
+      - '/root/filebrowser/filebrowser.db:/database/filebrowser.db'
+      - '/root/filebrowser/settings.json:/config/settings.json'
+    environment:
+      - PUID=0
+      - PGID=0
+    ports:
+      - '8080:80'
