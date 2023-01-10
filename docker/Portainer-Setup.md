@@ -22,3 +22,5 @@ Here are some options:
   - **URL:** `https://raw.githubusercontent.com/mycroftwilde/portainer_templates/master/Template/template.json`
 - [https://github.com/Qballjos/portainer_templates](https://github.com/Qballjos/portainer_templates)
   - **URL:** `https://raw.githubusercontent.com/Qballjos/portainer_templates/master/Template/template.json`
+
+When you update the App Templates URL, go to the **App Templates** tab in Portainer to see the updates list of available templates.
