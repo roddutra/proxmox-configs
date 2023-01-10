@@ -1,3 +1,7 @@
+# Helpful resources:
+# - https://github.com/AdguardTeam/AdGuardHome
+# - https://www.youtube.com/watch?v=u9ylq5Gry_A
+
 ---
 version: '2'
 services:
