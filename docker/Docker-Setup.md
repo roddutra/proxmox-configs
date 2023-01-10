@@ -5,13 +5,12 @@
 1. Go to the `local (proxmox)` storage drive, then open the **CT Templates** tab.
 2. Click the **Templates** button and download the latest image for Ubuntu.
 3. On the top-right click the **Create CT** button, give your container an ID and a custom Hostname (eg. `Docker-LXC`) and setup a password.
-4. On the **Template** step, pick the Ubuntu image downloaded earlier, then give the container the desired disk space, number of CPUs and RAM (eg. `4096`) and leave all other configs as they are.
 
 > ⚠️ IMPORTANT: when creating the container make sure it is setup as **Priviledged** by unticking the `Unpriviledged container` checkbox on the first step.
 >
 > Once created, go back to **Options > Features** and enable `Nesting` as well as `Create Device Nodes`.
 
-5.
+4. On the **Template** step, pick the Ubuntu image downloaded earlier, then give the container the desired disk space, number of CPUs and RAM (eg. `4096`) and leave all other configs as they are.
 
 ## Install Docker
 
