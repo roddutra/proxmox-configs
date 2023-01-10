@@ -1,0 +1,19 @@
+---
+version: '2.1'
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=0
+      - PGID=0
+      - VERSION=docker
+      #- PLEX_CLAIM=claim_token # Get it from https://plex.tv/claim
+    volumes:
+      - /mnt/Toshiba_USB_Drive/Plex:/config
+      - /mnt/Toshiba_USB_Drive/TV:/TV
+      - /mnt/Toshiba_USB_Drive/Movies:/Movies
+      - /mnt/Toshiba_USB_Drive/Downloads:/Downloads
+    ports:
+      - 32400:32400 #Web UI
+    restart: unless-stopped
