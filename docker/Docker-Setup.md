@@ -10,7 +10,8 @@
 >
 > Once created, go back to **Options > Features** and enable `Nesting` as well as `Create Device Nodes`.
 
-4. On the **Template** step, pick the Ubuntu image downloaded earlier, then give the container the desired disk space, number of CPUs and RAM (eg. `4096`) and leave all other configs as they are.
+4. Give it a Static IP in the IPv4 section (eg. `192.168.1.2/24` and Gateway `192.168.1.1`) and leave IPv6 blank.
+5. On the **Template** step, pick the Ubuntu image downloaded earlier, then give the container the desired disk space, number of CPUs and RAM (eg. `4096`) and leave all other configs as they are.
 
 ## Install Docker
 
