@@ -60,3 +60,36 @@ reboot now
 ```
 
 You can now create the AdGuardHome stack and others.
+
+# Troubleshooting
+
+## VPN issue: /dev/net/tun
+
+Following the instructions from [OpenVPN in LXC](https://pve.proxmox.com/wiki/OpenVPN_in_LXC) from the Proxmox wiki, run the following commands on the host machine in Proxmox (eg. `Docker-LXC`) to create the tunnel:
+
+```bash
+# Replace '{NODE_ID}' with the ID of the node in Proxmox (eg. 100.conf)
+nano /etc/pve/lxc/{NODE_ID}.conf
+```
+
+Add the following lines at the end:
+
+```bash
+lxc.cgroup2.devices.allow: c 10:200 rwm
+lxc.mount.entry: /dev/net dev/net none bind,create=dir
+```
+
+For your unprivileged container to be able to access the /dev/net/tun from your host, you need to set the owner by running:
+
+```bash
+# Replace '0:0' with the PID and GID from your user (eg. run id -u and id -g to find out)
+chown 0:0 /dev/net/tun
+```
+
+Then check the permissions are set correctly:
+
+```bash
+ls -l /dev/net
+# total 0
+# crw-rw-rw- 1 root root 10, 200 Jan  9 15:14 tun
+```

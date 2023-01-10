@@ -1,0 +1,39 @@
+# Resources:
+# - https://github.com/haugene/docker-transmission-openvpn/
+# - https://haugene.github.io/docker-transmission-openvpn/
+# - https://www.youtube.com/watch?v=IXyc8xGbqRY
+
+# To check the IP address of the container, open it's termninal and run:
+# curl ifconfig.co
+
+---
+version: '2'
+services:
+  transmission-openvpn:
+    image: haugene/transmission-openvpn:latest
+    container_name: transmission-openvpn
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN # This runs the container with raised privileges
+    devices:
+      - /dev/net/tun # This creates a tunnel for Transmission
+    volumes:
+      - /var/lib/docker/volumes/Transmission_Temp/_data:/data # Change this to your Torrent path
+    environment:
+      - OPENVPN_PROVIDER=NORDVPN # Or other compatible OpenVPN provider
+      - OPENVPN_USERNAME=username # VPN provider username (eg. name@example.com - NOT the Service Credentials). You might need to disable 2FA!
+      - OPENVPN_PASSWORD=password # VPN provider password
+      - NORDVPN_COUNTRY=AU
+      - NORDVPN_CATEGORY=P2P
+      - NORDVPN_PROTOCOL=udp
+      - LOCAL_NETWORK=192.168.1.0/24 # If your server's IP address is 192.168.1.x, then use this. If your server's IP address is 192.168.0.x, then change to 192.168.0.0/24
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 # Leave this as is
+      - PUID=0 #Change to your PUID
+      - PGID=0 #Change to your PGID
+    ports:
+      - 9091:9091 #GUI Port
+      - 8888:8888 #Transmission Port
+    dns:
+      - 192.168.1.1 #Use whatever DNS provider you want.
+      # - 8.8.8.8 #Use whatever DNS provider you want. This is Google.
+      # - 8.8.4.4 #Use whatever DNS provider you want. This is Google.
