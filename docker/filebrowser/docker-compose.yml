@@ -1,3 +1,14 @@
+# Create the configuration directories:
+# mkdir filebrowser
+# touch filebrowser.db
+# touch settings.json
+#
+# Default login:
+# username: admin
+# password: admin
+# Change this once the container has started
+
+---
 version: '3'
 
 services:
@@ -8,11 +19,11 @@ services:
     security_opt:
       - no-new-privileges:true
     volumes:
-      - '/mnt/Toshiba_USB_Drive:/srv' # Replace with the desired folder/drive mount
+      - '/:/srv'
       - '/root/filebrowser/filebrowser.db:/database/filebrowser.db'
       - '/root/filebrowser/settings.json:/config/settings.json'
     environment:
       - PUID=0
       - PGID=0
     ports:
-      - '8080:80'
+      - '8081:80'

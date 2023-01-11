@@ -1,0 +1,31 @@
+# Resources:
+# - https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
+# - https://www.youtube.com/watch?v=wLrmmh1eI94
+# - https://github.com/ChristianLempa/boilerplates/tree/main/docker-compose/traefik
+
+---
+version: '3.3'
+
+services:
+  traefik:
+    image: 'traefik:v2.9'
+    container_name: 'traefik'
+    command:
+      #- "--log.level=DEBUG"
+      - '--api.insecure=true'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--entrypoints.web.address=:80'
+    ports:
+      - '80:80'
+      - '8080:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+
+  whoami:
+    image: 'traefik/whoami'
+    container_name: 'simple-service'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.whoami.rule=Host(`dutra.local`)'
+      - 'traefik.http.routers.whoami.entrypoints=web'
