@@ -6,7 +6,7 @@
 2. Click the **Templates** button and download the latest image for Ubuntu.
 3. On the top-right click the **Create CT** button, give your container an ID and a custom Hostname (eg. `Docker-LXC`) and setup a password.
 
-> ⚠️ IMPORTANT: when creating the container make sure it is setup as **Priviledged** by unticking the `Unpriviledged container` checkbox on the first step.
+> ⚠️ IMPORTANT: when creating the container make sure it is setup as **Priviledged** by unticking the `Unpriviledged container` checkbox on the first step. This is not necessary for all applications and there might be a workaround ⁉️, but to create a container that connects to a VPN this was the only way that I got it to work and create the tunnel.
 >
 > Once created, go back to **Options > Features** and enable `Nesting` as well as `Create Device Nodes`.
 
@@ -25,3 +25,7 @@ AppArmor prevents the Portainer image from running in the LXC container so it ne
 apt remove apparmor --purge -y
 rm -rf /etc/apparmor*
 ```
+
+## Install Portainer
+
+Follow the instructions in the [Portainer Setup](Portainer-Setup.md) file.
