@@ -18,8 +18,6 @@ services:
       - 81:80/tcp #change this to something like 81:80 if port 80 is already in use
       - 3000:3000/tcp
     volumes:
-      # Create 'Adguard_Work' volume and paste the path below before the colon
-      - /var/lib/docker/volumes/Adguard_Work/_data/_data:/opt/adguardhome/work
-      # Create 'Adguard_Config' volume and paste the path below before the colon
-      - /var/lib/docker/volumes/Adguard_Config/_data:/opt/adguardhome/conf
-    restart: unless-stopped
+      - /root/adguardhome/work/_data:/opt/adguardhome/work # Create directory in the host first
+      - /root/adguardhome/config:/opt/adguardhome/conf # Create directory in the host first
+    restart: always

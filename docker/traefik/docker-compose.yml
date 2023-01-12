@@ -1,31 +1,46 @@
-# Resources:
-# - https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
-# - https://www.youtube.com/watch?v=wLrmmh1eI94
-# - https://github.com/ChristianLempa/boilerplates/tree/main/docker-compose/traefik
-
----
-version: '3.3'
+version: '3'
 
 services:
   traefik:
-    image: 'traefik:v2.9'
-    container_name: 'traefik'
-    command:
-      #- "--log.level=DEBUG"
-      - '--api.insecure=true'
-      - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
-      - '--entrypoints.web.address=:80'
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
     ports:
-      - '80:80'
-      - '8080:8080'
+      - 80:80
+      - 443:443
+    environment:
+      - CF_API_EMAIL=user@example.com
+      - CF_DNS_API_TOKEN=YOUR_API_TOKEN
+      # - CF_API_KEY=YOUR_API_KEY
+      # be sure to use the correct one depending on if you are using a token or key
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
-
-  whoami:
-    image: 'traefik/whoami'
-    container_name: 'simple-service'
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /root/traefik/data/traefik.yml:/traefik.yml:ro
+      - /root/traefik/data/acme.json:/acme.json
+      - /root/traefik/data/config.yml:/config.yml:ro
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.whoami.rule=Host(`dutra.local`)'
-      - 'traefik.http.routers.whoami.entrypoints=web'
+      - 'traefik.http.routers.traefik.entrypoints=http'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik-dashboard.local.example.com`)'
+      - 'traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD' # See README for instructions on how to do this & replace the contents here
+      - 'traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https'
+      - 'traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https'
+      - 'traefik.http.routers.traefik.middlewares=traefik-https-redirect'
+      - 'traefik.http.routers.traefik-secure.entrypoints=https'
+      - 'traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.local.example.com`)' # Replace with the desired domain & subdomain
+      - 'traefik.http.routers.traefik-secure.middlewares=traefik-auth'
+      - 'traefik.http.routers.traefik-secure.tls=true'
+      - 'traefik.http.routers.traefik-secure.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.traefik-secure.tls.domains[0].main=local.example.com' # Replace with the desired domain & subdomain
+      - 'traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.example.com' # Replace with the desired domain & subdomain
+      - 'traefik.http.routers.traefik-secure.service=api@internal'
+
+networks:
+  proxy:
+    name: proxy
+    driver: bridge

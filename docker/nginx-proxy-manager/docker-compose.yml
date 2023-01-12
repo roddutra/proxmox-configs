@@ -1,9 +1,14 @@
+# Initial user credentials:
+# Email: admin@example.com
+# Password: changeme
+
+---
 version: '3'
 
 services:
   npm:
     image: jc21/nginx-proxy-manager:latest
-    container_name: npm
+    container_name: nginx-proxy-manager
 
     restart: always
 
@@ -13,5 +18,5 @@ services:
       - 443:443
 
     volumes:
-      - <path/to/local/data>:/data
-      - <path/to/local/letsencrypt>:/etc/letsencrypt
+      - /root/nginx-proxy-manager/data:/data
+      - /root/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
