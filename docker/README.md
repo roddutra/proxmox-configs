@@ -135,8 +135,6 @@ The information for this guide was compiled from the following links:
 - https://www.homeautomationguy.io/docker-tips/accessing-usb-devices-from-docker-containers/
 - https://gist.github.com/crundberg/a77b22de856e92a7e14c81f40e7a74bd
 
----
-
 ### USB Device option 2
 
 Run `ls -l /dev/serial/by-id` on the Proxmox node shell (not the LXC):
