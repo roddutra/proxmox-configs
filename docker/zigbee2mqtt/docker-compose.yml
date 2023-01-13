@@ -13,5 +13,5 @@ services:
     environment:
       - TZ=Australia/Brisbane
     devices:
-      # Make sure this matched your adapter location
+      # Make sure this matches your adapter location & ID by running ls -l /dev/serial/by-id
       - /dev/ttyACM0:/dev/ttyACM0

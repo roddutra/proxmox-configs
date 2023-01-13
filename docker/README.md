@@ -54,7 +54,7 @@ Goodbye `vi` or `nano` 👋.
 
 ---
 
-## [WIP - Currently broken] Mapping a USB device to a LXC Container
+## Mapping a USB device to a LXC Container
 
 When using a USB device like a Zigbee Coordinator, you need to map the USB serial port from the host to the Container so it can be accessed.
 
@@ -102,13 +102,13 @@ Change `166` in **cgroup** to the cgroup you noted before.
 
 ```conf
 lxc.cgroup2.devices.allow: c 166:* rwm
-lxc.mount.entry: /lxc/{YOUR_PROXMOX_ID}/devices/ttyACM0 dev/ttyACM0 none bind,optional,create=file,mode=0666
+lxc.mount.entry: /dev/conbee dev/ttyACM0 none bind,optional,create=file
 ```
 
-Now create `/etc/udev/rules.d/50-myusb.rules` and, makind sure to replace `{VENDOR}` and `{PRODUCT}`, add:
+Now create `/etc/udev/rules.d/50-myusb.rules` and, making sure to replace `{YOUR_VENDOR}` and `{YOUR_PRODUCT}`, add:
 
 ```bash
-SUBSYSTEM=="tty", ATTRS{idVendor}=="{VENDOR}", ATTRS{idProduct}=="{PRODUCT}", MODE="0666", SYMLINK+="conbee"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="{YOUR_VENDOR}", ATTRS{idProduct}=="{YOUR_PRODUCT}", MODE="0666", SYMLINK+="conbee"
 ```
 
 Save the file and run:
@@ -134,14 +134,3 @@ The information for this guide was compiled from the following links:
 
 - https://www.homeautomationguy.io/docker-tips/accessing-usb-devices-from-docker-containers/
 - https://gist.github.com/crundberg/a77b22de856e92a7e14c81f40e7a74bd
-
-### USB Device option 2
-
-Run `ls -l /dev/serial/by-id` on the Proxmox node shell (not the LXC):
-
-```bash
-total 0
-lrwxrwxrwx 1 root root 13 Jan 13 14:24 usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2430090-if00 -> ../../ttyACM0
-```
-
-The device path is then `/dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2430090-if00`
