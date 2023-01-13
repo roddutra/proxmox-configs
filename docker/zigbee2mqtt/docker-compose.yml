@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt
+    container_name: zigbee2mqtt
+    restart: always
+    volumes:
+      - /root/zigbee2mqtt:/app/data # Create the /root/zigbee2mqtt folder
+      - /run/udev:/run/udev:ro
+    ports:
+      # Frontend port
+      - 8080:8080
+    environment:
+      - TZ=Australia/Brisbane
+    devices:
+      # Make sure this matched your adapter location
+      - /dev/ttyACM0:/dev/ttyACM0

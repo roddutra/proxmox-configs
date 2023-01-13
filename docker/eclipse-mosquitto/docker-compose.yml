@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  eclipse-mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: always
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    volumes:
+      - '/root/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf' # Create /root/mosquitto/config/mosquitto.conf first
+      - '/root/mosquitto/data:/mosquitto/data' # Create /root/mosquitto/data first
+      - '/root/mosquitto/log:/mosquitto/log' # Create /root/mosquitto/log first
