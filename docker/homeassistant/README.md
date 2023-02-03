@@ -10,12 +10,34 @@ I have chosen to use the Container installation method for the following reasons
 
 ## Install
 
-TODO!
+Use the [docker compose file](docker-compose.yml) to setup your stack for HA.
 
-##
+## Displaying other Docker Services in HA
+
+As we are not using the built-in add-ons from Home Assistant, we can still show the web UIs from our different services using the `panel_iframe` feature from Home Assistant.
+
+Open the `configuration.yml` in the HA folder and add:
+
+```yml
+panel_iframe:
+  portainer:
+    title: 'Portainer'
+    url: 'https://192.168.1.2:9443/#!/2/docker/containers'
+    icon: mdi:docker
+    require_admin: true
+  zigbee2mqtt:
+    title: 'zigbee2mqtt'
+    url: 'http://192.168.1.2:8080/#/'
+    icon: mdi:zigbee
+    require_admin: true
+```
+
+Restart Home Assistant via the Developer Tools tab for the changes to take effect.
+
+The example above adds 2 menu items, one for Portainer (displayed with a Docker icon) and one for Zigbee2MQTT (using the Ziggee icon).
 
 ## Resources
 
-- [Living without add-ons on Home Assistant Container](https://www.youtube.com/watch?v=DV_OD4OPKno)
 - [Installing Docker and Home Assistant Container](https://www.youtube.com/watch?v=S-itdbqwj4I)
+- [Living without add-ons on Home Assistant Container](https://www.youtube.com/watch?v=DV_OD4OPKno)
 - [Automatically Updating Home Assistant Container (and other Docker Containers)](https://www.youtube.com/watch?v=Wx1TsuTgv_Q)

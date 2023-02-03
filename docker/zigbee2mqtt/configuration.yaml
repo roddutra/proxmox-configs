@@ -2,17 +2,17 @@
 homeassistant: true
 
 # allow new devices to join
-permit_join: true
+permit_join: false
 
 # MQTT settings
 mqtt:
   # MQTT base topic for zigbee2mqtt MQTT messages
   base_topic: zigbee2mqtt
   # MQTT server URL
-  server: 'mqtt://localhost'
+  server: 'mqtt://192.168.1.2:1883'
   # MQTT server authentication, uncomment if required:
-  # user: my_user
-  # password: my_password
+  user: USERNAME # Created as per Eclipse-Mosquitto README
+  password: PASSWORD # Created as per Eclipse-Mosquitto README
 
 # Required: serial settings for ConBee II stick
 serial:
@@ -27,3 +27,23 @@ serial:
   baudrate: 115200
   # Optional: RTS / CTS Hardware Flow Control for serial port (default: false)
   rtscts: false
+
+# Enable the Zigbee2MQTT frontend
+frontend: true
+
+# Optional: Enable the availability feature (default = false)
+# https://www.zigbee2mqtt.io/guide/configuration/device-availability.html
+availability:
+  active:
+    # Time after which an active device will be marked as offline in
+    # minutes (default = 10 minutes)
+    timeout: 30
+  passive:
+    # Time after which a passive device will be marked as offline in
+    # minutes (default = 1500 minutes aka 25 hours)
+    timeout: 1500
+
+# Let Zigbee2MQTT generate a new network key on first start
+advanced:
+  network_key: GENERATE
+  channel: 20 # Sets the Zigbee networks channel to 20 to separate from Wifi 2.4GHz's common 1, 6 and 11 channels

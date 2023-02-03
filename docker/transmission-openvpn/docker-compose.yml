@@ -18,7 +18,10 @@ services:
     devices:
       - /dev/net/tun # This creates a tunnel for Transmission
     volumes:
-      - /var/lib/docker/volumes/Transmission_Temp/_data:/data # Change this to your Torrent path
+      - /mnt/Toshiba_USB_Drive/Downloads:/data # Change this to your Torrent path
+      - /mnt/Toshiba_USB_Drive/Downloads:/Downloads # Change this to your Torrent path
+      - /mnt/Toshiba_USB_Drive/Movies:/Movies # Change this to your Torrent path
+      - /mnt/Toshiba_USB_Drive/TV:/TV # Change this to your Torrent path
     environment:
       - OPENVPN_PROVIDER=NORDVPN # Or other compatible OpenVPN provider
       - OPENVPN_USERNAME=username # VPN provider username (eg. name@example.com - NOT the Service Credentials). You might need to disable 2FA!

@@ -1,0 +1,28 @@
+# Resources:
+# - https://github.com/linuxserver/docker-deluge
+
+# The admin interface is available at http://SERVER-IP:8112 with a default user/password of admin/deluge.
+# To change the password (recommended) log in to the web interface and go to Preferences->Interface->Password.
+# Change the inbound port to 6881 (or whichever port you've mapped for the container) under Preferences->Network, otherwise random ports will be used.
+
+---
+version: '2.1'
+services:
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    network_mode: 'container:gluetun' # Depends on Gluetun container
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - DELUGE_LOGLEVEL=error #optional
+    volumes:
+      - /root/deluge:/config
+      - /mnt/Toshiba_USB_Drive:/downloads
+    ports:
+      # Set the ports below in the Gluetun container stack
+      # - 8112:8112
+      # - 6881:6881
+      # - 6881:6881/udp
+    restart: unless-stopped

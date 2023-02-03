@@ -1,0 +1,27 @@
+# Resources:
+# - https://github.com/linuxserver/docker-qbittorrent
+
+# The webui is at <your-ip>:8082 and the default username/password is admin/adminadmin.
+# Change username/password via the webui in the webui section of settings.
+
+---
+version: '2.1'
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: 'container:gluetun' # Depends on Gluetun container
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - WEBUI_PORT=8082
+    volumes:
+      - /root/qbittorrent:/config
+      - /mnt/Toshiba_USB_Drive:/downloads
+    ports:
+      # Set the ports below in the Gluetun container stack
+      # - 8082:8082
+      # - 6881:6881
+      # - 6881:6881/udp
+    restart: unless-stopped
