@@ -28,5 +28,11 @@ services:
       - OPENVPN_USER=username
       - OPENVPN_PASSWORD=password
       - SERVER_REGIONS=Australia
+      # Comment out the HOSTNAMES below for auto-select or change it with your own list of servers from https://nordvpn.com/servers/tools/
+      - SERVER_HOSTNAMES=au736.nordvpn.com,au734.nordvpn.com,au741.nordvpn.com,au614.nordvpn.com
       # Timezone for accurate log times
       - TZ=Australia/Brisbane
+      # Shadowsocks Configs
+      - SHADOWSOCKS=on
+      - SHADOWSOCKS_PASSWORD=password
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
