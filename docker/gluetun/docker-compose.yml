@@ -1,6 +1,9 @@
 # Resources:
 # - https://github.com/qdm12/gluetun
 
+# To check the IP address of the container, open it's termninal and run:
+# curl ifconfig.co
+
 version: '3'
 services:
   gluetun:
@@ -16,23 +19,25 @@ services:
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
-      # Qbittorrent ports which use the Gluetun network
-      - 8082:8082
-      - 6881:6881
-      - 6881:6881/udp
+      # Deluge ports
+      - 8112:8112
+      - 6881-6889:6881-6889
+      - 6881-6889:6881-6889/udp
+      # Transmission ports
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
     volumes:
       - /root/gluetun:/gluetun
     environment:
       # See https://github.com/qdm12/gluetun/wiki
       - VPN_SERVICE_PROVIDER=nordvpn
-      - OPENVPN_USER=username
-      - OPENVPN_PASSWORD=password
-      - SERVER_REGIONS=Australia
-      # Comment out the HOSTNAMES below for auto-select or change it with your own list of servers from https://nordvpn.com/servers/tools/
-      - SERVER_HOSTNAMES=au736.nordvpn.com,au734.nordvpn.com,au741.nordvpn.com,au614.nordvpn.com
+      - OPENVPN_USER=<service_credentials_username>
+      - OPENVPN_PASSWORD=<service_credentials_password>
+      - SERVER_COUNTRIES=Australia
+      - SERVER_HOSTNAMES=au585.nordvpn.com,au586.nordvpn.com,au587.nordvpn.com,au588.nordvpn.com,au610.nordvpn.com,au611.nordvpn.com,au612.nordvpn.com,au613.nordvpn.com,au614.nordvpn.com,au615.nordvpn.com,au640.nordvpn.com,au641.nordvpn.com,au642.nordvpn.com,au643.nordvpn.com,au684.nordvpn.com,au685.nordvpn.com,au734.nordvpn.com,au735.nordvpn.com,au736.nordvpn.com,au737.nordvpn.com,au738.nordvpn.com,au739.nordvpn.com,au740.nordvpn.com,au741.nordvpn.com,au742.nordvpn.com,au743.nordvpn.com,au744.nordvpn.com,au745.nordvpn.com,au797.nordvpn.com,au798.nordvpn.com,au799.nordvpn.com,au800.nordvpn.com
       # Timezone for accurate log times
       - TZ=Australia/Brisbane
-      # Shadowsocks Configs
       - SHADOWSOCKS=on
-      - SHADOWSOCKS_PASSWORD=password
+      - SHADOWSOCKS_PASSWORD=<shadowsocks_password>
       - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24

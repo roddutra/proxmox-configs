@@ -1,0 +1,32 @@
+# Resources:
+# - https://docs.linuxserver.io/images/docker-transmission
+
+# The admin interface is available at http://SERVER-IP:9091
+
+---
+version: "2.1"
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    network_mode: 'container:gluetun' # Depends on Gluetun container
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      # - TRANSMISSION_WEB_HOME= #optional
+      - USER=<username>
+      - PASS=<password>
+      # - WHITELIST= #optional
+      # - PEERPORT= #optional
+      # - HOST_WHITELIST= #optional
+    volumes:
+      - /root/transmission:/config
+      - /mnt/Toshiba_USB_Drive:/downloads
+      - /root/transmission/watch:/watch
+    # ports:
+      # Set the ports below in the Gluetun container stack
+      # - 9091:9091
+      # - 51413:51413
+      # - 51413:51413/udp
+    restart: unless-stopped
