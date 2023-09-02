@@ -16,8 +16,8 @@ services:
       - /mnt/Toshiba_USB_Drive/Downloads:/Downloads
     ports:
       - 32400:32400 #Web UI
-      - 1900:1900/udp
-      - 5353:5353/udp
+      # - 1900:1900/udp # Disabled to prevent issues with Home Assistant
+      # - 5353:5353/udp # Disabled to prevent issues with Home Assistant
       - 32410:32410/udp
       - 32412:32412/udp
       - 32413:32413/udp

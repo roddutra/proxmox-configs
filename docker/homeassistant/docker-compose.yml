@@ -3,10 +3,11 @@ services:
   homeassistant:
     image: 'ghcr.io/home-assistant/home-assistant:stable'
     container_name: homeassistant
-    ports:
-      - 8123:8123
     volumes:
       - /root/homeassistant/config:/config # Create /root/homeassistant/config first
       - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=Australia/Brisbane
     restart: unless-stopped
-    network_mode: bridge
+    privileged: true
+    network_mode: host

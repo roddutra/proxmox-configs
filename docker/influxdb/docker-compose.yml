@@ -1,0 +1,27 @@
+# Resources:
+# - https://hub.docker.com/_/influxdb
+# - https://docs.influxdata.com/influxdb/v2.1/install/?t=Docker
+# - https://www.smarthomebeginner.com/influxdb-docker-compose-guide/
+
+---
+version: '2.1'
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - DOCKER_INFLUXDB_INIT_MODE=setup # Setup influxdb on first run from env vars
+      - DOCKER_INFLUXDB_INIT_USERNAME=USERNAME
+      - DOCKER_INFLUXDB_INIT_PASSWORD=PASSWORD
+      - DOCKER_INFLUXDB_INIT_ORG=ORG_NAME
+      - DOCKER_INFLUXDB_INIT_BUCKET=BUCKET_NAME
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=ADMIN_TOKEN
+      # - DOCKER_INFLUXDB_INIT_RETENTION=
+    volumes:
+      - /root/influxdb:/var/lib/influxdb2
+    ports:
+      - 8086:8086
+    restart: unless-stopped

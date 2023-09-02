@@ -1,0 +1,22 @@
+# Resources:
+# - https://hub.docker.com/r/linuxserver/mariadb
+
+---
+version: '2.1'
+services:
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: mariadb
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - MYSQL_ROOT_PASSWORD=ROOT_ACCESS_PASSWORD
+      - MYSQL_DATABASE=USER_DB_NAME
+      - MYSQL_USER=MYSQL_USER
+      - MYSQL_PASSWORD=DATABASE_PASSWORD
+    volumes:
+      - /root/mariadb:/config
+    ports:
+      - 3306:3306
+    restart: unless-stopped
