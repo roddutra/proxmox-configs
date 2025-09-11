@@ -9,6 +9,8 @@ services:
   uptime-kuma:
     image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
+    networks:
+      - proxy
     environment:
       - TZ=Australia/Brisbane
     volumes:
@@ -16,3 +18,24 @@ services:
     ports:
       - 3001:3001
     restart: unless-stopped
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      
+      # HTTP router with redirect to HTTPS
+      - "traefik.http.routers.uptime-kuma.entrypoints=http"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`uptime.homelab.local`)"
+      - "traefik.http.routers.uptime-kuma.middlewares=https-redirect"
+      
+      # HTTPS router
+      - "traefik.http.routers.uptime-kuma-secure.entrypoints=https"
+      - "traefik.http.routers.uptime-kuma-secure.rule=Host(`uptime.homelab.local`)"
+      - "traefik.http.routers.uptime-kuma-secure.tls=true"
+      - "traefik.http.routers.uptime-kuma-secure.service=uptime-kuma"
+      
+      # Service configuration
+      - "traefik.http.services.uptime-kuma.loadbalancer.server.port=3001"
+
+networks:
+  proxy:
+    external: true

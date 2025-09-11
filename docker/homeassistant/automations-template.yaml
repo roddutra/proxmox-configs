@@ -1,0 +1,123 @@
+# Home Assistant Automations Template
+# This file contains example automations that can be customized for your setup
+# Device IDs and entity IDs will need to be updated for your specific devices
+
+# Example: Backup Home Assistant every night at 3 AM
+# - alias: Backup Home Assistant every night at 3 AM
+#   id: "generate-unique-id-here"
+#   trigger:
+#     platform: time
+#     at: "03:00:00"
+#   action:
+#     alias: Create backup now
+#     service: backup.create
+
+# Example: Set theme at startup
+- alias: Theme - Set Default Theme
+  id: "theme_set_at_startup"
+  description: "Set the default theme when Home Assistant starts"
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    - service: frontend.set_theme
+      data:
+        name: noctis  # Change to your preferred theme
+        mode: dark    # Options: dark, light, or auto
+
+# Template: Low Battery Notification
+# Replace DEVICE_NAME, DEVICE_ID, and ENTITY_ID with your actual device values
+- alias: "Template - Device Low Battery Notification"
+  id: "low_battery_template"
+  description: "Send notification when device battery is low"
+  trigger:
+    - type: battery_level
+      platform: device
+      device_id: YOUR_DEVICE_ID_HERE  # Find in Developer Tools > States
+      entity_id: sensor.YOUR_BATTERY_SENSOR_HERE
+      domain: sensor
+      below: 10
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 5
+  condition:
+    - condition: time
+      before: "21:00:00"
+      after: "08:30:00"
+  action:
+    - service: notify.persistent_notification
+      data:
+        message: "Device battery is below 10%. Replace/recharge soon."
+        title: "Low Battery Alert 🔋"
+
+# Template: Smart Button Light Control
+# This template shows how to control lights with a smart button
+# Replace all PLACEHOLDER values with your actual device/entity IDs
+- alias: "Template - Smart Button Light Control"
+  id: "smart_button_template"
+  description: "Control lights with smart button"
+  trigger:
+    # Toggle button
+    - platform: device
+      domain: mqtt
+      device_id: YOUR_BUTTON_DEVICE_ID
+      type: action
+      subtype: toggle
+      discovery_id: YOUR_DISCOVERY_ID action_toggle
+      id: turn-on
+    # Brightness up
+    - platform: device
+      domain: mqtt
+      device_id: YOUR_BUTTON_DEVICE_ID
+      type: action
+      subtype: brightness_up_click
+      discovery_id: YOUR_DISCOVERY_ID action_brightness_up_click
+      id: dim-up
+    # Brightness down
+    - platform: device
+      domain: mqtt
+      device_id: YOUR_BUTTON_DEVICE_ID
+      type: action
+      subtype: brightness_down_click
+      discovery_id: YOUR_DISCOVERY_ID action_brightness_down_click
+      id: dim-down
+  condition: []
+  action:
+    - choose:
+        # Toggle light on/off
+        - conditions:
+            - condition: trigger
+              id: turn-on
+          sequence:
+            - type: toggle
+              device_id: YOUR_LIGHT_DEVICE_ID
+              entity_id: light.YOUR_LIGHT_ENTITY
+              domain: light
+        # Increase brightness
+        - conditions:
+            - condition: trigger
+              id: dim-up
+          sequence:
+            - device_id: YOUR_LIGHT_DEVICE_ID
+              domain: light
+              entity_id: light.YOUR_LIGHT_ENTITY
+              type: brightness_increase
+        # Decrease brightness
+        - conditions:
+            - condition: trigger
+              id: dim-down
+          sequence:
+            - device_id: YOUR_LIGHT_DEVICE_ID
+              domain: light
+              entity_id: light.YOUR_LIGHT_ENTITY
+              type: brightness_decrease
+  mode: single
+
+# Note: To find your device IDs and entity IDs:
+# 1. Go to Settings > Devices & Services
+# 2. Click on your device
+# 3. Click on the device info (three dots menu)
+# 4. You'll find the device_id in the URL or device info
+# 5. Entity IDs are shown in the device page
+# 6. Discovery IDs can be found in MQTT integration device details

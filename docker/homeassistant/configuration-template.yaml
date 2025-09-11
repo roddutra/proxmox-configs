@@ -1,0 +1,70 @@
+# Home Assistant Configuration Template
+# Copy this to configuration.yaml and customize for your environment
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Enable the Backup integration
+backup:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+  # extra_module_url:
+  #   - /hacsfiles/lovelace-card-mod/card-mod.js
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# IMPORTS
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+group: !include groups.yaml
+
+homekit:
+
+# MariaDB - CONFIGURE THESE VALUES
+recorder:
+  db_url: !secret mariadb_url  # Format: mysql://USER:PASSWORD@HOST/DATABASE?charset=utf8mb4
+  auto_purge: true
+  auto_repack: true
+  purge_keep_days: 1095  # Keep 3 years of history
+
+# InfluxDB - CONFIGURE THESE VALUES
+influxdb:
+  api_version: 2
+  host: !secret influxdb_host  # Your InfluxDB host IP
+  port: 8086
+  ssl: false
+  database: homeassistant
+  organization: !secret influxdb_organization
+  bucket: homeassistant
+  token: !secret influxdb_token
+  max_retries: 3
+  default_measurement: units
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+
+# HTTP Configuration for Traefik Reverse Proxy
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.20.0.0/16  # Traefik's proxy network subnet
+    - 192.168.1.0/24  # Your local network subnet (adjust as needed)
+
+# Storage for Bubble Card Modules (if using Bubble Card)
+template:
+  - trigger:
+      - trigger: event
+        event_type: bubble_card_update_modules
+    sensor:
+      - name: "Bubble Card Modules"
+        state: "saved"
+        icon: "mdi:puzzle"
+        attributes:
+          modules: "{{ trigger.event.data.modules }}"
+          last_updated: "{{ trigger.event.data.last_updated }}"

@@ -8,6 +8,8 @@ services:
   adguardhome:
     image: adguard/adguardhome
     container_name: adguardhome
+    networks:
+      - proxy
     ports:
       - 53:53/tcp
       - 53:53/udp
@@ -21,3 +23,13 @@ services:
       - /root/adguardhome/work/_data:/opt/adguardhome/work # Create directory in the host first
       - /root/adguardhome/config:/opt/adguardhome/conf # Create directory in the host first
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adguard.rule=Host(`adguard.homelab.local`)"
+      - "traefik.http.routers.adguard.entrypoints=https"
+      - "traefik.http.routers.adguard.tls=true"
+      - "traefik.http.services.adguard.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true

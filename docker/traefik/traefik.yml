@@ -1,6 +1,8 @@
+# Traefik configuration for local network with self-signed certificates
 api:
   dashboard: true
-  debug: true
+  debug: false
+
 entryPoints:
   http:
     address: ':80'
@@ -9,24 +11,31 @@ entryPoints:
         entryPoint:
           to: https
           scheme: https
+  
   https:
     address: ':443'
+
 serversTransport:
   insecureSkipVerify: true
+
 providers:
   docker:
     endpoint: 'unix:///var/run/docker.sock'
     exposedByDefault: false
+    network: proxy
+  
   file:
     filename: /config.yml
-certificatesResolvers:
-  cloudflare:
-    acme:
-      email: you@example.com
-      storage: acme.json
-      dnsChallenge:
-        provider: cloudflare
-        #disablePropagationCheck: true # uncomment this if you have issues pulling certificates through cloudflare, By setting this flag to true disables the need to wait for the propagation of the TXT record to all authoritative name servers.
-        resolvers:
-          - '1.1.1.1:53'
-          - '1.0.0.1:53'
+    watch: true
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/homelab.local.crt
+        keyFile: /certs/homelab.local.key
+
+log:
+  level: INFO
+
+accessLog: {}

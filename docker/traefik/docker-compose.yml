@@ -1,46 +1,64 @@
-version: '3'
+version: "3.8"
 
 services:
   traefik:
-    image: traefik:latest
+    image: traefik:v3.0
     container_name: traefik
-    restart: always
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
       - proxy
     ports:
-      - 80:80
-      - 443:443
-    environment:
-      - CF_API_EMAIL=user@example.com
-      - CF_DNS_API_TOKEN=YOUR_API_TOKEN
-      # - CF_API_KEY=YOUR_API_KEY
-      # be sure to use the correct one depending on if you are using a token or key
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Dashboard port (optional, remove for production)
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /root/traefik/data/traefik.yml:/traefik.yml:ro
-      - /root/traefik/data/acme.json:/acme.json
       - /root/traefik/data/config.yml:/config.yml:ro
+      - /root/traefik/certs:/certs:ro
+    environment:
+      - TZ=Australia/Brisbane # Adjust to your timezone
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.traefik.entrypoints=http'
-      - 'traefik.http.routers.traefik.rule=Host(`traefik-dashboard.local.example.com`)'
-      - 'traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD' # See README for instructions on how to do this & replace the contents here
-      - 'traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https'
-      - 'traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https'
-      - 'traefik.http.routers.traefik.middlewares=traefik-https-redirect'
-      - 'traefik.http.routers.traefik-secure.entrypoints=https'
-      - 'traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.local.example.com`)' # Replace with the desired domain & subdomain
-      - 'traefik.http.routers.traefik-secure.middlewares=traefik-auth'
-      - 'traefik.http.routers.traefik-secure.tls=true'
-      - 'traefik.http.routers.traefik-secure.tls.certresolver=cloudflare'
-      - 'traefik.http.routers.traefik-secure.tls.domains[0].main=local.example.com' # Replace with the desired domain & subdomain
-      - 'traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.example.com' # Replace with the desired domain & subdomain
-      - 'traefik.http.routers.traefik-secure.service=api@internal'
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+
+      # Dashboard configuration (HTTP with redirect to HTTPS)
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.homelab.local`)"
+      - "traefik.http.routers.traefik.middlewares=https-redirect"
+
+      # Dashboard configuration (HTTPS)
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.homelab.local`)"
+      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+
+      # Middleware for HTTPS redirect
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+
+      # Basic authentication for dashboard (optional)
+      # Generate password: echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
+      # Default: admin/admin (CHANGE THIS!)
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$2y$$10$$PlVP3K7LMkY4hYnZmCwDHe0v4jMRvdLxWZU5bYLTJKRZc3s1lX8Ky"
+
+      # Security headers
+      - "traefik.http.middlewares.default-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.default-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.default-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.default-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.default-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.default-headers.headers.stsSeconds=15552000"
 
 networks:
   proxy:
     name: proxy
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

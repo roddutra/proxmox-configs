@@ -4,6 +4,8 @@ services:
     image: eclipse-mosquitto
     container_name: mosquitto
     restart: always
+    networks:
+      - proxy
     ports:
       - 1883:1883
       - 9001:9001
@@ -11,3 +13,23 @@ services:
       - '/root/mosquitto/config:/mosquitto/config' # Create /root/mosquitto/config first
       - '/root/mosquitto/data:/mosquitto/data' # Create /root/mosquitto/data first
       - '/root/mosquitto/log:/mosquitto/log' # Create /root/mosquitto/log first
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      
+      # WebSocket interface (port 9001)
+      - "traefik.http.routers.mosquitto-ws.entrypoints=http"
+      - "traefik.http.routers.mosquitto-ws.rule=Host(`mosquitto.homelab.local`)"
+      - "traefik.http.routers.mosquitto-ws.middlewares=https-redirect"
+      
+      - "traefik.http.routers.mosquitto-ws-secure.entrypoints=https"
+      - "traefik.http.routers.mosquitto-ws-secure.rule=Host(`mosquitto.homelab.local`)"
+      - "traefik.http.routers.mosquitto-ws-secure.tls=true"
+      - "traefik.http.routers.mosquitto-ws-secure.service=mosquitto-ws"
+      
+      # WebSocket service configuration
+      - "traefik.http.services.mosquitto-ws.loadbalancer.server.port=9001"
+
+networks:
+  proxy:
+    external: true

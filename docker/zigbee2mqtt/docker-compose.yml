@@ -1,9 +1,11 @@
-version: '3.8'
+version: "3.8"
 services:
   zigbee2mqtt:
     image: koenkk/zigbee2mqtt
     container_name: zigbee2mqtt
     restart: always
+    networks:
+      - proxy
     volumes:
       - /root/zigbee2mqtt:/app/data # Create the /root/zigbee2mqtt folder
       - /run/udev:/run/udev:ro
@@ -15,3 +17,24 @@ services:
     devices:
       # Make sure this matches your adapter location & ID by running ls -l /dev/serial/by-id
       - /dev/ttyACM0:/dev/ttyACM0
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+
+      # HTTP router with redirect to HTTPS
+      - "traefik.http.routers.zigbee2mqtt.entrypoints=http"
+      - "traefik.http.routers.zigbee2mqtt.rule=Host(`z2m.homelab.local`)"
+      - "traefik.http.routers.zigbee2mqtt.middlewares=https-redirect"
+
+      # HTTPS router
+      - "traefik.http.routers.zigbee2mqtt-secure.entrypoints=https"
+      - "traefik.http.routers.zigbee2mqtt-secure.rule=Host(`z2m.homelab.local`)"
+      - "traefik.http.routers.zigbee2mqtt-secure.tls=true"
+      - "traefik.http.routers.zigbee2mqtt-secure.service=zigbee2mqtt"
+
+      # Service configuration
+      - "traefik.http.services.zigbee2mqtt.loadbalancer.server.port=8080"
+
+networks:
+  proxy:
+    external: true

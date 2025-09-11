@@ -7,6 +7,8 @@ services:
     container_name: homarr
     image: ghcr.io/homarr-labs/homarr:latest
     restart: unless-stopped
+    networks:
+      - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
       - /root/homarr-v1/appdata:/appdata
@@ -14,3 +16,24 @@ services:
       - SECRET_ENCRYPTION_KEY={YOUR_SECRET_ENCRYPTION_KEY} # Generate it using `openssl rand -hex 32`
     ports:
       - "7575:7575"
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      
+      # HTTP router with redirect to HTTPS
+      - "traefik.http.routers.homarr.entrypoints=http"
+      - "traefik.http.routers.homarr.rule=Host(`dashboard.homelab.local`)"
+      - "traefik.http.routers.homarr.middlewares=https-redirect"
+      
+      # HTTPS router
+      - "traefik.http.routers.homarr-secure.entrypoints=https"
+      - "traefik.http.routers.homarr-secure.rule=Host(`dashboard.homelab.local`)"
+      - "traefik.http.routers.homarr-secure.tls=true"
+      - "traefik.http.routers.homarr-secure.service=homarr"
+      
+      # Service configuration
+      - "traefik.http.services.homarr.loadbalancer.server.port=7575"
+
+networks:
+  proxy:
+    external: true

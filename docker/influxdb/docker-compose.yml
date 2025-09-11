@@ -9,6 +9,8 @@ services:
   influxdb:
     image: influxdb:latest
     container_name: influxdb
+    networks:
+      - proxy
     environment:
       - PUID=0
       - PGID=0
@@ -25,3 +27,24 @@ services:
     ports:
       - 8086:8086
     restart: unless-stopped
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      
+      # HTTP router with redirect to HTTPS
+      - "traefik.http.routers.influxdb.entrypoints=http"
+      - "traefik.http.routers.influxdb.rule=Host(`influxdb.homelab.local`)"
+      - "traefik.http.routers.influxdb.middlewares=https-redirect"
+      
+      # HTTPS router
+      - "traefik.http.routers.influxdb-secure.entrypoints=https"
+      - "traefik.http.routers.influxdb-secure.rule=Host(`influxdb.homelab.local`)"
+      - "traefik.http.routers.influxdb-secure.tls=true"
+      - "traefik.http.routers.influxdb-secure.service=influxdb"
+      
+      # Service configuration
+      - "traefik.http.services.influxdb.loadbalancer.server.port=8086"
+
+networks:
+  proxy:
+    external: true

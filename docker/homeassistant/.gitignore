@@ -1,0 +1,42 @@
+# Home Assistant Git Ignore File
+
+# IMPORTANT: Never commit secrets to version control
+secrets.yaml
+configuration.yaml
+automations.yaml
+
+# Home Assistant generated files
+*.log
+*.db
+*.db-shm
+*.db-wal
+.HA_VERSION
+.cloud
+.storage/
+.uuid
+
+# Backup files
+backups/
+*.backup
+
+# Custom components cache
+custom_components/__pycache__/
+custom_components/*/__pycache__/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Keep the templates and examples
+!configuration-template.yaml
+!secrets-example.yaml
+!automations-template.yaml

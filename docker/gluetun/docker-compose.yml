@@ -15,10 +15,14 @@ services:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
+    networks:
+      - proxy
     ports:
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
+      # qBittorrent WebUI port
+      - 8082:8082
       # Deluge ports
       - 8112:8112
       - 6881-6889:6881-6889
@@ -41,3 +45,28 @@ services:
       - SHADOWSOCKS=on
       - SHADOWSOCKS_PASSWORD=<shadowsocks_password>
       - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
+    labels:
+      # Traefik configuration for services using this VPN network
+      - "traefik.enable=true"
+      
+      # qBittorrent configuration
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.homelab.local`)"
+      - "traefik.http.routers.qbittorrent.entrypoints=https"
+      - "traefik.http.routers.qbittorrent.tls=true"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8082"
+      
+      # Deluge configuration
+      - "traefik.http.routers.deluge.rule=Host(`deluge.homelab.local`)"
+      - "traefik.http.routers.deluge.entrypoints=https"
+      - "traefik.http.routers.deluge.tls=true"
+      - "traefik.http.services.deluge.loadbalancer.server.port=8112"
+      
+      # Transmission configuration
+      - "traefik.http.routers.transmission.rule=Host(`transmission.homelab.local`)"
+      - "traefik.http.routers.transmission.entrypoints=https"
+      - "traefik.http.routers.transmission.tls=true"
+      - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+
+networks:
+  proxy:
+    external: true

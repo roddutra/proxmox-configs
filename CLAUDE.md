@@ -48,6 +48,24 @@ docker-compose logs -f
 docker-compose up -d --force-recreate --build
 ```
 
+### Traefik-Specific Operations
+```bash
+# Create the proxy network (one-time setup)
+docker network create proxy
+
+# Check Traefik routing
+docker logs traefik
+
+# Access Traefik dashboard
+# https://traefik.homelab.local (admin/admin by default)
+
+# Test DNS resolution
+nslookup service.homelab.local
+
+# Generate new dashboard password
+echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
+```
+
 ## Directory Structure
 
 Each service in `/docker/` has its own directory containing:
@@ -63,8 +81,10 @@ Each service in `/docker/` has its own directory containing:
   - Container name matching the service
   - Restart policy: `unless-stopped` or `always`
   - Volume mounts to `/root/[service_name]` for persistent data
-  - Network mode: usually `bridge` unless sharing VPN (e.g., Gluetun)
+  - Network mode: usually `bridge` unless sharing VPN (e.g., Gluetun) or using host mode (Home Assistant)
   - Environment variables for configuration
+  - Traefik labels for reverse proxy (when applicable)
+  - Connection to `proxy` network for Traefik discovery
 
 ### Volume Mounting Pattern
 ```yaml
@@ -105,6 +125,18 @@ ports:
 - Default gateway: `192.168.1.1`
 - LXC container IP example: `192.168.1.2/24`
 - Services exposed on various ports, documented in each `docker-compose.yml`
+- Docker proxy network: `172.20.0.0/16` (used by Traefik and services)
+- Local domain: `*.homelab.local` (resolved by AdGuard Home DNS)
+
+### Traefik Reverse Proxy Setup
+- All services are accessible via HTTPS with local domain names (e.g., `service.homelab.local`)
+- Traefik handles SSL termination with self-signed or mkcert certificates
+- Services must join the `proxy` Docker network to be discoverable
+- DNS wildcard `*.homelab.local` points to the LXC container running Traefik
+- Special cases:
+  - Home Assistant uses `network_mode: host` and requires config.yml setup
+  - Services behind Gluetun VPN need labels on the Gluetun container
+  - See `/docker/traefik/` for complete documentation
 
 ## Important Notes
 
