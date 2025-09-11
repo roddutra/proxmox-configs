@@ -1,0 +1,25 @@
+# Resources:
+# - https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#run-grafana-via-docker-compose
+# - https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
+
+# Default login is admin/admin
+
+---
+version: '3.8'
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    user: '0'
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+      # - GF_INSTALL_PLUGINS= # Comma separated list of plugins to install, e.g. "grafana-clock-panel,grafana-simple-json-datasource"
+    volumes:
+      - /root/grafana:/var/lib/grafana
+    ports:
+      - 3002:3000
+    restart: unless-stopped
