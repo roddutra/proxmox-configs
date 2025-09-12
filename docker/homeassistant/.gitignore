@@ -3,6 +3,7 @@
 # IMPORTANT: Never commit secrets to version control
 secrets.yaml
 configuration.yaml
+configuration-backup.yaml
 automations.yaml
 
 # Home Assistant generated files

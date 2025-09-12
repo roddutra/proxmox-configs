@@ -1,0 +1,19 @@
+---
+version: "2.1"
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: vscode-server
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - PASSWORD=<PASSWORD> # Optional web gui password
+      - SUDO_PASSWORD=<SUDO_PASSWORD> # If this optional variable is set, user will have sudo access in the code-server terminal with the specified password.
+      - PWA_APPNAME=code-server
+    volumes:
+      - /root/vscode-server:/config
+      - /root:/root
+    ports:
+      - 8443:8443
+    restart: unless-stopped

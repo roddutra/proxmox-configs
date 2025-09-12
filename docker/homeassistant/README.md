@@ -101,19 +101,37 @@ This configuration is designed to work with the docker-compose.yml in this direc
 
 ```
 homeassistant/
-├── configuration-template.yaml  # Template configuration (safe to commit)
-├── configuration.yaml           # Actual configuration (DO NOT COMMIT)
-├── secrets-example.yaml         # Template for secrets (safe to commit)
-├── secrets.yaml                 # Actual secrets (DO NOT COMMIT)
-├── automations-template.yaml    # Template automations (safe to commit)
-├── automations.yaml            # Your automations
-├── groups.yaml                 # Group definitions
-├── scenes.yaml                 # Scene definitions
-├── scripts.yaml                # Script definitions
-├── docker-compose.yml          # Docker deployment
-├── .gitignore                  # Prevents committing sensitive files
-└── README.md                   # This file
+├── configuration-template.yaml      # Template configuration (safe to commit)
+├── configuration.yaml               # Actual configuration (DO NOT COMMIT)
+├── secrets-example.yaml             # Template for secrets (safe to commit)
+├── secrets.yaml                     # Actual secrets (DO NOT COMMIT)
+├── automations-template.yaml        # Template automations (safe to commit)
+├── automations.yaml                 # Your automations
+├── groups.yaml                      # Group definitions
+├── scenes.yaml                      # Scene definitions
+├── scripts.yaml                     # Script definitions
+├── docker-compose.yml               # Docker deployment
+├── STORAGE_OPTIMIZATION_GUIDE.md    # Database storage optimization guide
+├── .gitignore                       # Prevents committing sensitive files
+└── README.md                        # This file
 ```
+
+## Storage Optimization
+
+Home Assistant can generate significant database storage over time. The configuration includes optimizations to prevent excessive growth:
+
+### Current Settings
+- **Recorder retention**: 7 days for most entities
+- **Energy data**: Preserved indefinitely (solar, battery, consumption)
+- **Excluded domains**: automation, media_player, weather, etc.
+- **Commit interval**: 30 seconds (reduces write frequency)
+
+### Storage Management
+For detailed instructions on optimizing database storage, see [STORAGE_OPTIMIZATION_GUIDE.md](STORAGE_OPTIMIZATION_GUIDE.md). This guide covers:
+- Database cleanup procedures
+- Retention policy configuration
+- InfluxDB optimization
+- Backup and migration strategies
 
 ## Security Best Practices
 

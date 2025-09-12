@@ -4,7 +4,7 @@
 # - https://www.smarthomebeginner.com/influxdb-docker-compose-guide/
 
 ---
-version: '2.1'
+version: "2.1"
 services:
   influxdb:
     image: influxdb:latest
@@ -21,7 +21,7 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=ORG_NAME
       - DOCKER_INFLUXDB_INIT_BUCKET=BUCKET_NAME
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=ADMIN_TOKEN
-      # - DOCKER_INFLUXDB_INIT_RETENTION=
+      - DOCKER_INFLUXDB_INIT_RETENTION=52w
     volumes:
       - /root/influxdb:/var/lib/influxdb2
     ports:
@@ -30,18 +30,18 @@ services:
     labels:
       # Enable Traefik for this container
       - "traefik.enable=true"
-      
+
       # HTTP router with redirect to HTTPS
       - "traefik.http.routers.influxdb.entrypoints=http"
       - "traefik.http.routers.influxdb.rule=Host(`influxdb.homelab.local`)"
       - "traefik.http.routers.influxdb.middlewares=https-redirect"
-      
+
       # HTTPS router
       - "traefik.http.routers.influxdb-secure.entrypoints=https"
       - "traefik.http.routers.influxdb-secure.rule=Host(`influxdb.homelab.local`)"
       - "traefik.http.routers.influxdb-secure.tls=true"
       - "traefik.http.routers.influxdb-secure.service=influxdb"
-      
+
       # Service configuration
       - "traefik.http.services.influxdb.loadbalancer.server.port=8086"
 
