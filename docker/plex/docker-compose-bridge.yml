@@ -1,0 +1,28 @@
+---
+version: "2.1"
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=0
+      - PGID=0
+      - VERSION=docker
+      - PLEX_CLAIM=claim_token # Get it from https://plex.tv/claim
+      - ADVERTISE_IP=http://192.168.1.2:32400/ # Critical for TV discovery
+      - ALLOWED_NETWORKS=192.168.1.0/24,172.25.0.0/16 # Allow local network
+    volumes:
+      - /mnt/Toshiba_USB_Drive/Plex:/config
+      - /mnt/Toshiba_USB_Drive/TV:/TV
+      - /mnt/Toshiba_USB_Drive/Movies:/Movies
+      - /mnt/Toshiba_USB_Drive/Downloads:/Downloads
+    ports:
+      - 32400:32400 # Web UI
+      - 1900:1900/udp # DLNA/UPnP discovery - REQUIRED for TVs
+      - 5353:5353/udp # Bonjour/mDNS discovery - REQUIRED for Apple TV
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      - 32469:32469
+    restart: unless-stopped

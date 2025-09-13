@@ -1,0 +1,20 @@
+---
+version: "2.1"
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host # This solves most discovery issues
+    environment:
+      - PUID=0
+      - PGID=0
+      - VERSION=docker
+      - PLEX_CLAIM=claim-gJfa_Bnzh6xxKdnmR7s1 # Get it from https://plex.tv/claim
+      - ADVERTISE_IP=http://192.168.1.2:32400/ # Add this for proper advertisement
+      - ALLOWED_NETWORKS=192.168.1.0/24 # Allow local network without auth
+    volumes:
+      - /mnt/Toshiba_USB_Drive/Plex:/config
+      - /mnt/Toshiba_USB_Drive/TV:/TV
+      - /mnt/Toshiba_USB_Drive/Movies:/Movies
+      - /mnt/Toshiba_USB_Drive/Downloads:/Downloads
+    restart: unless-stopped
