@@ -9,7 +9,7 @@ services:
       - PUID=0
       - PGID=0
       - VERSION=docker
-      - PLEX_CLAIM=claim-gJfa_Bnzh6xxKdnmR7s1 # Get it from https://plex.tv/claim
+      - PLEX_CLAIM=claim_token # Get it from https://plex.tv/claim
       - ADVERTISE_IP=http://192.168.1.2:32400/ # Add this for proper advertisement
       - ALLOWED_NETWORKS=192.168.1.0/24 # Allow local network without auth
     volumes:
