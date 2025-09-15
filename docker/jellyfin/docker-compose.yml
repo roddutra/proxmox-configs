@@ -1,0 +1,26 @@
+---
+version: "2.1"
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Brisbane
+      - JELLYFIN_PublishedServerUrl=192.168.1.2 #optional
+    volumes:
+      - /mnt/Toshiba_USB_Drive/Jellyfin:/config
+      - /mnt/Toshiba_USB_Drive/TV:/data/tvshows
+      - /mnt/Toshiba_USB_Drive/Movies:/data/movies
+    devices:
+      - /dev/dri:/dev/dri # Intel Quick Sync hardware transcoding
+    group_add:
+      - "993" # render group ID - verified with: getent group render
+      - "44"  # video group ID - verified with: getent group video
+    ports:
+      - 8096:8096
+      #- 8920:8920 # Optional - Https webUI (you need to set up your own certificate)
+      - 7359:7359/udp # Optional - Allows clients to discover Jellyfin on the local network
+      - 1901:1900/udp # Optional - Service discovery used by DNLA and clients
+    restart: unless-stopped
